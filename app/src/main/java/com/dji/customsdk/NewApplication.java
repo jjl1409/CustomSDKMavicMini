@@ -20,6 +20,7 @@ import dji.sdk.base.BaseProduct;
 import dji.sdk.sdkmanager.DJISDKInitEvent;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.sdk.useraccount.UserAccountManager;
+import dji.sdk.products.Aircraft;
 
 public class NewApplication extends Application {
 
@@ -52,6 +53,17 @@ public class NewApplication extends Application {
             mProduct = DJISDKManager.getInstance().getProduct();
         }
         return mProduct;
+    }
+
+    public static synchronized Aircraft getAircraftInstance() {
+        if (!isAircraftConnected()) {
+            return null;
+        }
+        return (Aircraft) getProductInstance();
+    }
+
+    public static boolean isAircraftConnected() {
+        return getProductInstance() != null && getProductInstance() instanceof Aircraft;
     }
 
     @Override

@@ -13,7 +13,9 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 
 import com.dji.customsdk.R;
-import com.dji.customsdk.*;
+import com.dji.customsdk.utils.DialogUtils;
+import com.dji.customsdk.utils.ModuleVerificationUtil;
+
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,7 +48,7 @@ public class VirtualSticks extends RelativeLayout
     private TextView textView;
 
     private Timer sendVirtualStickDataTimer;
-    private SendVirtualStickDataTask sendVirtualStickDataTask;
+//    private SendVirtualStickDataTask sendVirtualStickDataTask;
 
     private float pitch;
     private float roll;
