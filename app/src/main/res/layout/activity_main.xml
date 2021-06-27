@@ -212,19 +212,19 @@
         android:text="Enable Virtual Stick"
         style="@style/common_button"
         android:id="@+id/btn_enable_virtual_stick"
-        android:layout_paddingLeft="20dp"
-        android:layout_paddingTop = "200dp" />
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop= "100dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Disable Virtual Stick"
+        android:singleLine="true"
         style="@style/common_button"
         android:id="@+id/btn_disable_virtual_stick"
         android:layout_below="@+id/btn_enable_virtual_stick"
-        android:layout_alignStart="@+id/btn_enable_virtual_stick"
-        android:layout_marginLeft="0dp"
-        android:layout_alignEnd="@+id/btn_enable_virtual_stick" />
+        android:layout_alignStart="@+id/btn_enable_virtual_stick"/>
+<!--        android:layout_alignEnd="@+id/btn_enable_virtual_stick"-->     />
 
 
 </RelativeLayout>
