@@ -8,7 +8,8 @@
     android:orientation="horizontal"
     tools:context=".MainActivity">
 
-    <!-- Widget to see first person view (FPV) -->
+    <include layout="@layout/sticks_virtual"/>
+
     <dji.ux.widget.FPVWidget
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -206,24 +207,6 @@
         custom:excludeItem="ESCStatus"
         android:visibility="gone"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enable Virtual Stick"
-        style="@style/common_button"
-        android:id="@+id/btn_enable_virtual_stick"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop= "100dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Disable Virtual Stick"
-        android:singleLine="true"
-        style="@style/common_button"
-        android:id="@+id/btn_disable_virtual_stick"
-        android:layout_below="@+id/btn_enable_virtual_stick"
-        android:layout_alignStart="@+id/btn_enable_virtual_stick"/>
 <!--        android:layout_alignEnd="@+id/btn_enable_virtual_stick"-->     />
 
 

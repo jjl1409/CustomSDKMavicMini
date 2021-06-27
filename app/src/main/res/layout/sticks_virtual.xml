@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sticks_virtual"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_blue"
+    android:orientation="horizontal"
+    tools:context=".VirtualSticks">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Virtual Stick"
+        style="@style/common_button"
+        android:id="@+id/btn_enable_virtual_stick"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop= "100dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disable Virtual Stick"
+        android:singleLine="true"
+        style="@style/common_button"
+        android:id="@+id/btn_disable_virtual_stick"
+        android:layout_below="@+id/btn_enable_virtual_stick"
+        android:layout_alignStart="@+id/btn_enable_virtual_stick"/>
+    <!--        android:layout_alignEnd="@+id/btn_enable_virtual_stick"-->     />
+
+
+</RelativeLayout>

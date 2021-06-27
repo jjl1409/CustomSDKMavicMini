@@ -3,6 +3,7 @@ package com.dji.customsdk;
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -30,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     , 1);
         }
-
         setContentView(R.layout.activity_main);
 
     }
