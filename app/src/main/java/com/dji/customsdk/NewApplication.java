@@ -21,7 +21,7 @@ import dji.sdk.sdkmanager.DJISDKInitEvent;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.sdk.useraccount.UserAccountManager;
 
-public class DemoApplication extends Application {
+public class NewApplication extends Application {
 
     public static final String FLAG_CONNECTION_CHANGE = "uxsdk_demo_connection_change";
 
@@ -39,7 +39,7 @@ public class DemoApplication extends Application {
         return instance;
     }
 
-    public DemoApplication() {
+    public NewApplication() {
 
     }
 
