@@ -1,8 +1,12 @@
 package com.dji.customsdk;
 
 import android.Manifest;
+import android.app.Service;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.widget.Button;
+import android.content.Context;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +15,9 @@ import androidx.core.app.ActivityCompat;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
+    private VirtualSticks virtualSticks;
+    private Button btnEnableVirtualStick;
+    private Button btnDisableVirtualStick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +39,18 @@ public class MainActivity extends AppCompatActivity {
                     , 1);
         }
         setContentView(R.layout.activity_main);
+        if(virtualSticks == null) {
+            virtualSticks = new VirtualSticks(this);
+        }
+        initUI(this);
 
+    }
+
+    protected void initUI(Context context) {
+        btnEnableVirtualStick = (Button) findViewById(R.id.btn_enable_virtual_stick);
+        btnDisableVirtualStick = (Button) findViewById(R.id.btn_disable_virtual_stick);
+        btnEnableVirtualStick.setOnClickListener(virtualSticks);
+        btnDisableVirtualStick.setOnClickListener(virtualSticks);
     }
 
 }

@@ -51,9 +51,6 @@ public class VirtualSticks extends RelativeLayout
     private boolean verticalControlModeFlag = true;
     private boolean horizontalCoordinateFlag = true;
 
-    private Button btnEnableVirtualStick;
-    private Button btnDisableVirtualStick;
-
     private TextView textView;
 
     private Timer sendVirtualStickDataTimer;
@@ -66,16 +63,12 @@ public class VirtualSticks extends RelativeLayout
 
     public VirtualSticks(Context context) {
         super(context);
-        init(context);
-    }
-
-    private void init(Context context) {
         this.context = context;
     }
 
     @Override
     public void onClick(View v) {
-        System.out.println("Help");
+
         FlightController flightController = ModuleVerificationUtil.getFlightController();
         if (flightController == null) {
             return;
@@ -86,11 +79,12 @@ public class VirtualSticks extends RelativeLayout
                     @Override
                     public void onResult(DJIError djiError) {
                         DialogUtils.showDialogBasedOnError(context, djiError);
-                        Toast.makeText(context,"Failed to activate virtual sticks",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context,"Failed to activate virtual sticks",Toast.LENGTH_SHORT).show();
                     }
                 });
-                flightController.setVirtualStickAdvancedModeEnabled(false);
-                Toast.makeText(context,"Activated virtual sticks",Toast.LENGTH_SHORT).show();
+//                flightController.setVirtualStickAdvancedModeEnabled(true);
+//                Toast.makeText(context,"Activated virtual sticks",Toast.LENGTH_SHORT).show();
+                System.out.println("Sticks activated");
                 break;
 
             case R.id.btn_disable_virtual_stick:
@@ -98,11 +92,12 @@ public class VirtualSticks extends RelativeLayout
                     @Override
                     public void onResult(DJIError djiError) {
                         DialogUtils.showDialogBasedOnError(context, djiError);
-                        Toast.makeText(context,"Failed to deactivate virtual sticks",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context,"Failed to deactivate virtual sticks",Toast.LENGTH_SHORT).show();
                     }
                 });
-                flightController.setVirtualStickAdvancedModeEnabled(false);
-                Toast.makeText(context,"Deactivated virtual sticks",Toast.LENGTH_SHORT).show();
+//                flightController.setVirtualStickAdvancedModeEnabled(false);
+//                Toast.makeText(context,"Deactivated virtual sticks",Toast.LENGTH_SHORT).show();
+                System.out.println("Sticks deactivated");
                 break;
 
             default:
