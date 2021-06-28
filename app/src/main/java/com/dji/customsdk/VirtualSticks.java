@@ -54,7 +54,7 @@ public class VirtualSticks extends RelativeLayout
     private TextView textView;
 
     private Timer sendVirtualStickDataTimer;
-//    private SendVirtualStickDataTask sendVirtualStickDataTask;
+    private SendVirtualStickDataTask sendVirtualStickDataTask;
     private Context context;
     private float pitch;
     private float roll;
@@ -82,9 +82,25 @@ public class VirtualSticks extends RelativeLayout
 //                        Toast.makeText(context,"Failed to activate virtual sticks",Toast.LENGTH_SHORT).show();
                     }
                 });
-//                flightController.setVirtualStickAdvancedModeEnabled(true);
+                flightController.setVirtualStickAdvancedModeEnabled(true);
 //                Toast.makeText(context,"Activated virtual sticks",Toast.LENGTH_SHORT).show();
-                System.out.println("Sticks activated");
+                flightController.getVirtualStickModeEnabled(new CommonCallbacks.CompletionCallbackWith<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        System.out.println("Sticks on");
+                    }
+
+                    @Override
+                    public void onFailure(DJIError djiError) {
+                        System.out.println("Sticks off");
+
+                    }
+                });
+                if (null == sendVirtualStickDataTimer) {
+                    sendVirtualStickDataTask = new SendVirtualStickDataTask();
+                    sendVirtualStickDataTimer = new Timer();
+                    sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 100, 200);
+                }
                 break;
 
             case R.id.btn_disable_virtual_stick:
@@ -92,19 +108,36 @@ public class VirtualSticks extends RelativeLayout
                     @Override
                     public void onResult(DJIError djiError) {
                         DialogUtils.showDialogBasedOnError(context, djiError);
-//                        Toast.makeText(context,"Failed to deactivate virtual sticks",Toast.LENGTH_SHORT).show();
                     }
                 });
-//                flightController.setVirtualStickAdvancedModeEnabled(false);
+                flightController.setVirtualStickAdvancedModeEnabled(false);
 //                Toast.makeText(context,"Deactivated virtual sticks",Toast.LENGTH_SHORT).show();
                 System.out.println("Sticks deactivated");
+                if (null == sendVirtualStickDataTimer) {
+                    sendVirtualStickDataTimer.cancel();
+                    sendVirtualStickDataTimer = null;
+                    sendVirtualStickDataTask = null;
+                }
                 break;
-
             default:
                 break;
         }
     }
+    private class SendVirtualStickDataTask extends TimerTask {
 
-
+        @Override
+        public void run() {
+            FlightController flightController = ModuleVerificationUtil.getFlightController();
+            if (flightController == null) {
+                return;
+            }
+            flightController.sendVirtualStickFlightControlData(new FlightControlData(pitch, roll, yaw, throttle),
+                                new CommonCallbacks.CompletionCallback() {
+                                    @Override
+                                    public void onResult(DJIError djiError) {
+                                    }
+                                });
+        }
+    }
 
 }
