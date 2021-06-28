@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
     private VirtualSticks virtualSticks;
+    private Button btnSpin;
     private Button btnEnableVirtualStick;
     private Button btnDisableVirtualStick;
 
@@ -46,12 +47,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // Initializes all the UI elements other than the UXSDK elements
     protected void initUI(Context context) {
         btnEnableVirtualStick = (Button) findViewById(R.id.btn_enable_virtual_stick);
         btnDisableVirtualStick = (Button) findViewById(R.id.btn_disable_virtual_stick);
+        btnSpin = (Button) findViewById(R.id.btn_spin);
         btnEnableVirtualStick.setOnClickListener(virtualSticks);
         btnDisableVirtualStick.setOnClickListener(virtualSticks);
+        btnSpin.setOnClickListener(virtualSticks);
     }
+
 
 }
 

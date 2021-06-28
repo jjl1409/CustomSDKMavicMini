@@ -61,6 +61,7 @@ public class VirtualSticks extends RelativeLayout
     private float yaw;
     private float throttle;
 
+    // Enum that tracks which mode the drone is in
     private enum Mode {
         ON,
         OFF,
@@ -75,6 +76,7 @@ public class VirtualSticks extends RelativeLayout
 
     @Override
     public void onClick(View v) {
+        // Handles button presses for VirtualSticks
 
         FlightController flightController = ModuleVerificationUtil.getFlightController();
         if (flightController == null) {
@@ -82,6 +84,7 @@ public class VirtualSticks extends RelativeLayout
         }
         switch (v.getId()) {
             case R.id.btn_enable_virtual_stick:
+                // Enable sticks
                 flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {
@@ -89,29 +92,26 @@ public class VirtualSticks extends RelativeLayout
 //                        Toast.makeText(context,"Failed to activate virtual sticks",Toast.LENGTH_SHORT).show();
                     }
                 });
+                // And advanced sticks
                 flightController.setVirtualStickAdvancedModeEnabled(true);
 //                Toast.makeText(context,"Activated virtual sticks",Toast.LENGTH_SHORT).show();
-                flightController.getVirtualStickModeEnabled(new CommonCallbacks.CompletionCallbackWith<Boolean>() {
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                        System.out.println("Sticks on");
-                    }
-
-                    @Override
-                    public void onFailure(DJIError djiError) {
-                        System.out.println("Sticks off");
-
-                    }
-                });
+                // Make the timer
                 if (null == sendVirtualStickDataTimer) {
                     sendVirtualStickDataTask = new SendVirtualStickDataTask();
                     sendVirtualStickDataTimer = new Timer();
                     sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 100, 200);
                 }
+                // Set all modes and coordinate systems to proper values
+                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
+                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
+                flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
+                // Set the mode to ON
                 mode = mode.ON;
                 break;
 
             case R.id.btn_disable_virtual_stick:
+                // Disable sticks
                 flightController.setVirtualStickModeEnabled(false, new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {
@@ -121,15 +121,18 @@ public class VirtualSticks extends RelativeLayout
                 flightController.setVirtualStickAdvancedModeEnabled(false);
 //                Toast.makeText(context,"Deactivated virtual sticks",Toast.LENGTH_SHORT).show();
                 System.out.println("Sticks deactivated");
+                // Make sure you kill the timer
                 if (null == sendVirtualStickDataTimer) {
                     sendVirtualStickDataTimer.cancel();
                     sendVirtualStickDataTimer = null;
                     sendVirtualStickDataTask = null;
                 }
+                // Set the mode to off
                 mode = mode.OFF;
                 break;
 
             case R.id.btn_spin:
+                // Checks if the virtual sticks are on or not
                 if (mode != mode.OFF) {
                     mode = mode.SPIN;
                 }
@@ -140,8 +143,13 @@ public class VirtualSticks extends RelativeLayout
         }
     }
 
+    // Updates pitch, roll, yaw, throttle based on the mode. Pitch, roll, and throttle are in m/s.
+    // Yaw is in degrees/s.
     public void updateFlightControlData() {
         switch(mode) {
+            case SPIN:
+                yaw = 40;
+                break;
             default:
                 pitch = 0;
                 roll = 0;
@@ -151,7 +159,7 @@ public class VirtualSticks extends RelativeLayout
         }
     }
 
-
+    // Sends the flight data (pitch, roll, yaw, throttle) to the flight controller.
     private class SendVirtualStickDataTask extends TimerTask {
 
         @Override
@@ -161,6 +169,7 @@ public class VirtualSticks extends RelativeLayout
                 return;
             }
             updateFlightControlData();
+//            System.out.println(String.format("%.2f, %.2f, %.2f, %.2f", pitch, roll, yaw, throttle));
             flightController.sendVirtualStickFlightControlData(new FlightControlData(pitch, roll, yaw, throttle),
                                 new CommonCallbacks.CompletionCallback() {
                                     @Override
