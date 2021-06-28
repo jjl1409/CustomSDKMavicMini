@@ -61,6 +61,13 @@ public class VirtualSticks extends RelativeLayout
     private float yaw;
     private float throttle;
 
+    private enum Mode {
+        ON,
+        OFF,
+        SPIN
+    }
+    private Mode mode;
+
     public VirtualSticks(Context context) {
         super(context);
         this.context = context;
@@ -101,6 +108,7 @@ public class VirtualSticks extends RelativeLayout
                     sendVirtualStickDataTimer = new Timer();
                     sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 100, 200);
                 }
+                mode = mode.ON;
                 break;
 
             case R.id.btn_disable_virtual_stick:
@@ -118,11 +126,32 @@ public class VirtualSticks extends RelativeLayout
                     sendVirtualStickDataTimer = null;
                     sendVirtualStickDataTask = null;
                 }
+                mode = mode.OFF;
                 break;
+
+            case R.id.btn_spin:
+                if (mode != mode.OFF) {
+                    mode = mode.SPIN;
+                }
+                break;
+
             default:
                 break;
         }
     }
+
+    public void updateFlightControlData() {
+        switch(mode) {
+            default:
+                pitch = 0;
+                roll = 0;
+                yaw = 0;
+                throttle = 0;
+                break;
+        }
+    }
+
+
     private class SendVirtualStickDataTask extends TimerTask {
 
         @Override
@@ -131,6 +160,7 @@ public class VirtualSticks extends RelativeLayout
             if (flightController == null) {
                 return;
             }
+            updateFlightControlData();
             flightController.sendVirtualStickFlightControlData(new FlightControlData(pitch, roll, yaw, throttle),
                                 new CommonCallbacks.CompletionCallback() {
                                     @Override

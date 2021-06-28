@@ -28,5 +28,15 @@
         android:layout_alignStart="@+id/btn_enable_virtual_stick"/>
     <!--        android:layout_alignEnd="@+id/btn_enable_virtual_stick"-->     />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Spin"
+        android:singleLine="true"
+        style="@style/common_button"
+        android:id="@+id/btn_spin"
+        android:layout_below="@+id/btn_disable_virtual_stick"
+        android:layout_alignStart="@+id/btn_disable_virtual_stick"/>
+
 
 </RelativeLayout>
