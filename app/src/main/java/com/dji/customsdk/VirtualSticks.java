@@ -65,7 +65,8 @@ public class VirtualSticks extends RelativeLayout
     private enum Mode {
         ON,
         OFF,
-        SPIN
+        SPIN,
+        ORBIT
     }
     private Mode mode;
 
@@ -144,7 +145,16 @@ public class VirtualSticks extends RelativeLayout
                     }
                 }
                 break;
-
+            case R.id.btn_orbit:
+                // Checks if the virtual sticks are on or not
+                if (mode != mode.OFF) {
+                    mode = mode.ORBIT;
+                    if (cameraImaging != null){
+                        System.out.println("Starting camera");
+                        cameraImaging.startCameraTimer(100, 1000);
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -154,6 +164,9 @@ public class VirtualSticks extends RelativeLayout
     // Yaw is in degrees/s.
     public void updateFlightControlData() {
         switch(mode) {
+            case ORBIT:
+                yaw = 18;
+                roll = 2;
             case SPIN:
                 yaw = 40;
                 break;
