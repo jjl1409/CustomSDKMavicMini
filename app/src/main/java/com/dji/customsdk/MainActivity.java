@@ -4,10 +4,12 @@ import android.Manifest;
 import android.app.Service;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.content.Context;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -16,9 +18,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
     private VirtualSticks virtualSticks;
+    private CameraImaging cameraImaging;
     private Button btnSpin;
     private Button btnEnableVirtualStick;
     private Button btnDisableVirtualStick;
+    public Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +44,13 @@ public class MainActivity extends AppCompatActivity {
                     , 1);
         }
         setContentView(R.layout.activity_main);
+        if(cameraImaging == null) {
+            cameraImaging = new CameraImaging(this);
+        }
         if(virtualSticks == null) {
             virtualSticks = new VirtualSticks(this);
         }
+        handler = new Handler();
         initUI(this);
 
     }
@@ -57,6 +65,16 @@ public class MainActivity extends AppCompatActivity {
         btnSpin.setOnClickListener(virtualSticks);
     }
 
+    public void showToast(final String msg) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
+    public CameraImaging getCamera() {
+        return cameraImaging;
+    }
 }
 

@@ -22,6 +22,7 @@ import android.os.Bundle;
 
 import com.dji.customsdk.NewApplication;
 import com.dji.customsdk.R;
+import com.dji.customsdk.CameraImaging;
 import com.dji.customsdk.utils.DialogUtils;
 import com.dji.customsdk.utils.ModuleVerificationUtil;
 
@@ -30,8 +31,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import dji.common.error.DJIError;
-import dji.common.flightcontroller.simulator.InitializationData;
-import dji.common.flightcontroller.simulator.SimulatorState;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
@@ -56,6 +55,7 @@ public class VirtualSticks extends RelativeLayout
     private Timer sendVirtualStickDataTimer;
     private SendVirtualStickDataTask sendVirtualStickDataTask;
     private Context context;
+    private CameraImaging cameraImaging;
     private float pitch;
     private float roll;
     private float yaw;
@@ -72,6 +72,7 @@ public class VirtualSticks extends RelativeLayout
     public VirtualSticks(Context context) {
         super(context);
         this.context = context;
+        cameraImaging = ((MainActivity)context).getCamera();
     }
 
     @Override
@@ -108,6 +109,7 @@ public class VirtualSticks extends RelativeLayout
                 flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
                 // Set the mode to ON
                 mode = mode.ON;
+                cameraImaging.stopCameraTimer();
                 break;
 
             case R.id.btn_disable_virtual_stick:
@@ -129,12 +131,17 @@ public class VirtualSticks extends RelativeLayout
                 }
                 // Set the mode to off
                 mode = mode.OFF;
+                cameraImaging.stopCameraTimer();
                 break;
 
             case R.id.btn_spin:
                 // Checks if the virtual sticks are on or not
                 if (mode != mode.OFF) {
                     mode = mode.SPIN;
+                    if (cameraImaging != null){
+                        System.out.println("Starting camera");
+                        cameraImaging.startCameraTimer(100, 5000);
+                    }
                 }
                 break;
 
