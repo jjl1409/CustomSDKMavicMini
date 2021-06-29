@@ -161,7 +161,7 @@ public class VirtualSticks extends RelativeLayout
     }
 
     // Updates pitch, roll, yaw, throttle based on the mode. Pitch, roll, and throttle are in m/s.
-    // Yaw is in degrees/s.
+    // Yaw is in degrees/s. (TBD)
     public void updateFlightControlData() {
         switch(mode) {
             case ORBIT:
