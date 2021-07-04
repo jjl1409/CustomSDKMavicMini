@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CustomSDK.iml" filepath="$PROJECT_DIR$/.idea/modules/CustomSDK.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CustomSDK.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CustomSDK.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CustomSDKMavicMini.iml" filepath="$PROJECT_DIR$/.idea/modules/CustomSDKMavicMini.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CustomSDKMavicMini.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CustomSDKMavicMini.app.iml" />
     </modules>
   </component>
 </project>

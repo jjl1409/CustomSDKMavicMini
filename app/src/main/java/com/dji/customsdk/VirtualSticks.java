@@ -151,7 +151,7 @@ public class VirtualSticks extends RelativeLayout
                     mode = mode.ORBIT;
                     if (cameraImaging != null){
                         System.out.println("Starting camera");
-                        cameraImaging.startCameraTimer(100, 1000);
+                        cameraImaging.startCameraTimer(100, 2000);
                     }
                 }
                 break;
@@ -165,8 +165,9 @@ public class VirtualSticks extends RelativeLayout
     public void updateFlightControlData() {
         switch(mode) {
             case ORBIT:
-                yaw = 18;
-                roll = 2;
+                yaw = 0;
+                pitch = (float)0.1;
+                break;
             case SPIN:
                 yaw = 40;
                 break;

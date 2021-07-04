@@ -40,7 +40,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Spin"
+        android:text="Orbit"
         style="@style/common_button"
         android:id="@+id/btn_orbit"
         android:layout_below="@id/btn_spin"
