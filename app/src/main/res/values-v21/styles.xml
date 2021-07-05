@@ -18,7 +18,7 @@
 
     <style name="common_button">
         <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_height">30dp</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:background">@drawable/round_btn</item>
         <item name="android:paddingLeft">5dp</item>
@@ -26,5 +26,11 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="common_seekbar">
+        <item name = "android:layout_width">150dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_height">30dp</item>
     </style>
 </resources>

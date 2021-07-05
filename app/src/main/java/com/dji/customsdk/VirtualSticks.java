@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.Toast;
@@ -43,7 +44,7 @@ import dji.keysdk.KeyManager;
 import dji.sdk.flightcontroller.FlightController;
 
 public class VirtualSticks extends RelativeLayout
-    implements View.OnClickListener{
+    implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private boolean yawControlModeFlag = true;
     private boolean rollPitchControlModeFlag = true;
@@ -60,6 +61,8 @@ public class VirtualSticks extends RelativeLayout
     private float roll;
     private float yaw;
     private float throttle;
+    private float pitchVelocity;
+    private float angularVelocity;
 
     // Enum that tracks which mode the drone is in
     private enum Mode {
@@ -75,6 +78,7 @@ public class VirtualSticks extends RelativeLayout
         this.context = context;
         cameraImaging = ((MainActivity)context).getCamera();
     }
+
 
     @Override
     public void onClick(View v) {
@@ -160,13 +164,33 @@ public class VirtualSticks extends RelativeLayout
         }
     }
 
+    public void onProgressChanged(SeekBar seekBar, int progress,
+                                  boolean fromUser) {
+        switch (seekBar.getId()) {
+
+            case R.id.seekbar_pitchvelocity:
+                pitchVelocity = (float)(((progress - 50) / 5) * 0.1);
+                ((MainActivity)getContext()).textPitchVelocity.setText("Pitch velocity: " + pitchVelocity );
+                break;
+
+            case R.id.seekbar_angularvelocity:
+                angularVelocity = (float)(((progress - 50) / 5) * 5);
+                ((MainActivity)getContext()).textAngularVelocity.setText("Angular velocity: " + angularVelocity );
+                break;
+        }
+    }
+
+    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+    public void onStopTrackingTouch(SeekBar seekBar) {}
+
     // Updates pitch, roll, yaw, throttle based on the mode. Pitch, roll, and throttle are in m/s.
-    // Yaw is in degrees/s. (TBD)
+    // Yaw is in degrees/s.
     public void updateFlightControlData() {
         switch(mode) {
             case ORBIT:
-                yaw = 0;
-                pitch = (float)0.1;
+                yaw = angularVelocity;
+                pitch = pitchVelocity;
                 break;
             case SPIN:
                 yaw = 40;

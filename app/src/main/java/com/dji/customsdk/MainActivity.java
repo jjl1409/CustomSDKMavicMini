@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.widget.Button;
 import android.content.Context;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private Button btnEnableVirtualStick;
     private Button btnDisableVirtualStick;
     private Button btnOrbit;
+    private SeekBar seekbarPitchVelocity;
+    private SeekBar seekbarAngularVelocity;
+    public TextView textPitchVelocity;
+    public TextView textAngularVelocity;
     public Handler handler;
 
     @Override
@@ -62,10 +68,19 @@ public class MainActivity extends AppCompatActivity {
         btnDisableVirtualStick = (Button) findViewById(R.id.btn_disable_virtual_stick);
         btnSpin = (Button) findViewById(R.id.btn_spin);
         btnOrbit = (Button) findViewById(R.id.btn_orbit);
+        seekbarPitchVelocity = findViewById(R.id.seekbar_pitchvelocity);
+        seekbarAngularVelocity = findViewById(R.id.seekbar_angularvelocity);
+        textPitchVelocity = findViewById(R.id.text_pitchvelocity);
+        textAngularVelocity = findViewById(R.id.text_angularvelocity);
+
         btnEnableVirtualStick.setOnClickListener(virtualSticks);
         btnDisableVirtualStick.setOnClickListener(virtualSticks);
         btnSpin.setOnClickListener(virtualSticks);
         btnOrbit.setOnClickListener(virtualSticks);
+        seekbarPitchVelocity.setOnSeekBarChangeListener(virtualSticks);
+        seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);
+        textPitchVelocity.setText("Pitch velocity: 0");
+        textAngularVelocity.setText("Angular velocity: 0");
     }
 
     public void showToast(final String msg) {
