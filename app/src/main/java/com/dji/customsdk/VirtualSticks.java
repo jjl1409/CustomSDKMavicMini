@@ -63,13 +63,16 @@ public class VirtualSticks extends RelativeLayout
     private float throttle;
     private float pitchVelocity;
     private float angularVelocity;
+    private float rollVelocity;
+    private int internalTimer;
 
     // Enum that tracks which mode the drone is in
     private enum Mode {
         ON,
         OFF,
         SPIN,
-        ORBIT
+        ORBIT,
+        FORWARD
     }
     private Mode mode;
 
@@ -152,11 +155,7 @@ public class VirtualSticks extends RelativeLayout
             case R.id.btn_orbit:
                 // Checks if the virtual sticks are on or not
                 if (mode != mode.OFF) {
-                    mode = mode.ORBIT;
-                    if (cameraImaging != null){
-                        System.out.println("Starting camera");
-                        cameraImaging.startCameraTimer(100, 2000);
-                    }
+                    mode = mode.FORWARD;
                 }
                 break;
             default:
@@ -174,7 +173,7 @@ public class VirtualSticks extends RelativeLayout
                 break;
 
             case R.id.seekbar_angularvelocity:
-                angularVelocity = (float)(((progress - 50) / 5) * 5);
+                angularVelocity = (float)(((progress - 50) / 2) * 2);
                 ((MainActivity)getContext()).textAngularVelocity.setText("Angular velocity: " + angularVelocity );
                 break;
         }
@@ -188,12 +187,24 @@ public class VirtualSticks extends RelativeLayout
     // Yaw is in degrees/s.
     public void updateFlightControlData() {
         switch(mode) {
+            case FORWARD:
+                internalTimer++;
+                roll = -1;
+                double rollTimer = 360 * 5 * pitchVelocity / angularVelocity / 2 / Math.PI;
+                if (internalTimer > rollTimer) {
+                    if (cameraImaging != null){
+                        System.out.println("Starting camera");
+                        cameraImaging.startCameraTimer(100, 2000);
+                    }
+                    internalTimer = 0;
+                    mode = mode.ORBIT;
+                }
+                break;
             case ORBIT:
+            case SPIN:
+                roll = 0;
                 yaw = angularVelocity;
                 pitch = pitchVelocity;
-                break;
-            case SPIN:
-                yaw = 40;
                 break;
             default:
                 pitch = 0;
