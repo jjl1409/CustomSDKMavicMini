@@ -25,16 +25,17 @@ public class MainActivity extends AppCompatActivity {
     private Button btnEnableVirtualStick;
     private Button btnDisableVirtualStick;
     private Button btnOrbit;
+    private Button btnWaypoint;
     private SeekBar seekbarPitchVelocity;
     private SeekBar seekbarAngularVelocity;
     public TextView textPitchVelocity;
     public TextView textAngularVelocity;
+    public TextView textLatitudeLongitude;
     public Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // When the compile and target version is higher than 22, please request the
         // following permissions at runtime to ensure the
         // SDK work well.
@@ -50,16 +51,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                     , 1);
         }
+        handler = new Handler();
         setContentView(R.layout.activity_main);
         if(cameraImaging == null) {
             cameraImaging = new CameraImaging(this);
         }
+        initUI(this);
         if(virtualSticks == null) {
             virtualSticks = new VirtualSticks(this);
         }
-        handler = new Handler();
-        initUI(this);
-
     }
 
     // Initializes all the UI elements other than the UXSDK elements
@@ -68,19 +68,24 @@ public class MainActivity extends AppCompatActivity {
         btnDisableVirtualStick = (Button) findViewById(R.id.btn_disable_virtual_stick);
         btnSpin = (Button) findViewById(R.id.btn_spin);
         btnOrbit = (Button) findViewById(R.id.btn_orbit);
+        btnWaypoint = (Button) findViewById(R.id.btn_waypoint);
         seekbarPitchVelocity = findViewById(R.id.seekbar_pitchvelocity);
         seekbarAngularVelocity = findViewById(R.id.seekbar_angularvelocity);
         textPitchVelocity = findViewById(R.id.text_pitchvelocity);
         textAngularVelocity = findViewById(R.id.text_angularvelocity);
+        textLatitudeLongitude = findViewById(R.id.text_latitudelongitude);
+
 
         btnEnableVirtualStick.setOnClickListener(virtualSticks);
         btnDisableVirtualStick.setOnClickListener(virtualSticks);
         btnSpin.setOnClickListener(virtualSticks);
         btnOrbit.setOnClickListener(virtualSticks);
+        btnWaypoint.setOnClickListener(virtualSticks);
         seekbarPitchVelocity.setOnSeekBarChangeListener(virtualSticks);
         seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);
         textPitchVelocity.setText("Pitch velocity: 0");
         textAngularVelocity.setText("Angular velocity: 0");
+        textLatitudeLongitude.setText("Latitude: 0          Longitude: 0");
     }
 
     public void showToast(final String msg) {

@@ -1,13 +1,8 @@
 package com.dji.customsdk;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.dji.customsdk.R;
-import com.dji.customsdk.NewApplication;
-import com.dji.customsdk.MainActivity;
 import com.dji.customsdk.utils.DialogUtils;
 import com.dji.customsdk.utils.ModuleVerificationUtil;
 
@@ -18,10 +13,8 @@ import java.util.Timer;
 
 import dji.common.camera.SettingsDefinitions;
 import dji.common.error.DJIError;
-import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.camera.Camera;
-import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.media.MediaFile;
 
 public class CameraImaging {

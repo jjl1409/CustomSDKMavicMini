@@ -5,13 +5,13 @@ import android.content.Context;
 
 import com.secneo.sdk.Helper;
 
-public class MApplication extends Application {
+public class MainApplication extends Application {
 
     private NewApplication newApplication;
     @Override
     protected void attachBaseContext(Context paramContext) {
         super.attachBaseContext(paramContext);
-        Helper.install(MApplication.this);
+        Helper.install(MainApplication.this);
         if (newApplication == null) {
             newApplication = new NewApplication();
             newApplication.setContext(this);
@@ -24,4 +24,3 @@ public class MApplication extends Application {
         newApplication.onCreate();
     }
 }
-

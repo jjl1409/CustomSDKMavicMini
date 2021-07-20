@@ -26,6 +26,7 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:alpha">.7</item>
     </style>
 
     <style name="common_seekbar">
