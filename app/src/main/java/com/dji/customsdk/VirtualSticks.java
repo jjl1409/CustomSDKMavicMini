@@ -15,6 +15,7 @@ import java.util.TimerTask;
 
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.FlightControllerState;
+import dji.common.flightcontroller.GPSSignalLevel;
 import dji.common.flightcontroller.LocationCoordinate3D;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
@@ -50,6 +51,7 @@ public class VirtualSticks extends RelativeLayout
     private float rollVelocity;
     private double latitude;
     private double longitude;
+    private float altitude;
     private int internalTimer;
 
     // Enum that tracks which mode the drone is in
@@ -66,29 +68,28 @@ public class VirtualSticks extends RelativeLayout
     public VirtualSticks(Context context) {
         super(context);
         this.context = context;
-        cameraImaging = ((MainActivity)context).getCamera();
-        updateGUITask= new UpdateGUITask();
+        cameraImaging = ((MainActivity) context).getCamera();
+        updateGUITask = new UpdateGUITask();
         UpdateGUITimer = new Timer();
         UpdateGUITimer.schedule(updateGUITask, 1000, 50);
     }
 
+    public MainActivity getMainContext(){
+        return (MainActivity)getContext();
+    }
 
     @Override
     public void onClick(View v) {
         // Handles button presses for VirtualSticks
 
-        FlightController flightController = ModuleVerificationUtil.getFlightController();
-        if (flightController == null) {
-            return;
-        }
         switch (v.getId()) {
 
             case R.id.btn_disable_virtual_stick:
-                disableVirtualSticks(flightController);
-
+                disableVirtualSticks();
+                break;
             case R.id.btn_spin:
                 // Checks if the virtual sticks are on or not
-                enableVirtualSticks(flightController);
+                enableVirtualSticks();
                 mode = mode.SPIN;
                 if (cameraImaging != null){
                     System.out.println("Starting camera");
@@ -97,15 +98,22 @@ public class VirtualSticks extends RelativeLayout
                 break;
             case R.id.btn_orbit:
                 // Checks if the virtual sticks are on or not
-                enableVirtualSticks(flightController);
+                enableVirtualSticks();
                 mode = mode.BACKWARD;
                 break;
             case R.id.btn_waypoint:
-                enableVirtualSticks(flightController);
-                mode = mode.WAYPOINT;
-                if (mode != mode.OFF) {
-                    mode = mode.WAYPOINT;
+                if (!isGPSStrong()){
+                    break;
                 }
+                enableWaypoints();
+                mode = mode.WAYPOINT;
+                WaypointNavigation waypointNavigation = new WaypointNavigation(
+                        WaypointNavigation.Mode.SQUARE, latitude, longitude, altitude);
+                if (cameraImaging != null){
+                    System.out.println("Starting camera");
+                    cameraImaging.startCameraTimer(500, 2000);
+                }
+                break;
             default:
                 break;
         }
@@ -132,11 +140,40 @@ public class VirtualSticks extends RelativeLayout
 
     public void onStopTrackingTouch(SeekBar seekBar) {}
 
+    // Checks GPS is strong enough to do flight with waypoints
+    public boolean isGPSStrong(){
+        FlightController flightController = ModuleVerificationUtil.getFlightController();
+        if (flightController == null) {
+            return false;
+        }
+        FlightControllerState flightControllerState = flightController.getState();
+        if (flightController.getState() == null){
+            return false;
+        }
+        GPSSignalLevel GPS = flightControllerState.getGPSSignalLevel();
+        if (GPS == null){
+            return false;
+        }
+        switch (GPS){
+            case NONE:
+            case LEVEL_0:
+            case LEVEL_1:
+            case LEVEL_2:
+            case LEVEL_3:
+                return false;
+            default:
+                return true;
+        }
+    }
 
     // Virtual sticks functionality
 
-    public void enableVirtualSticks(FlightController flightController) {
+    public void enableVirtualSticks() {
         // Enable sticks
+        FlightController flightController = ModuleVerificationUtil.getFlightController();
+        if (flightController == null) {
+            return;
+        }
         flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
             @Override
             public void onResult(DJIError djiError) {
@@ -160,7 +197,11 @@ public class VirtualSticks extends RelativeLayout
         cameraImaging.stopCameraTimer();
     }
 
-    public void disableVirtualSticks(FlightController flightController) {
+    public void disableVirtualSticks() {
+        FlightController flightController = ModuleVerificationUtil.getFlightController();
+        if (flightController == null) {
+            return;
+        }
         // Disable sticks
         flightController.setVirtualStickModeEnabled(false, new CommonCallbacks.CompletionCallback() {
             @Override
@@ -178,10 +219,15 @@ public class VirtualSticks extends RelativeLayout
             sendVirtualStickDataTask = null;
         }
         // Set the mode to off
+        mode = Mode.OFF;
         cameraImaging.stopCameraTimer();
     }
 
-    public void enableWaypoints(FlightController flightController) {
+    public void enableWaypoints() {
+        FlightController flightController = ModuleVerificationUtil.getFlightController();
+        if (flightController == null) {
+            return;
+        }
         // Enable sticks
         flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
             @Override
@@ -200,11 +246,10 @@ public class VirtualSticks extends RelativeLayout
         }
         // Set all modes and coordinate systems to proper values
         flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
-        flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
-        flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
+        flightController.setYawControlMode(YawControlMode.ANGLE);
+        flightController.setVerticalControlMode(VerticalControlMode.POSITION);
         flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
         cameraImaging.stopCameraTimer();
-
     }
 
     // Updates pitch, roll, yaw, throttle based on the mode. Pitch, roll, and throttle are in m/s.
@@ -212,6 +257,23 @@ public class VirtualSticks extends RelativeLayout
     public void updateFlightControlData() {
         switch(mode) {
             case WAYPOINT:
+                if (waypointNavigation == null || !isGPSStrong()){
+                    getMainContext().showToast("Either no waypoints or GPS is not strong enough");
+                    break;
+                }
+                else if (waypointNavigation.isCloseToWaypoint(latitude, longitude)){
+                    if (waypointNavigation.currentWaypoint >= waypointNavigation.numWaypoints()){
+                        disableVirtualSticks();
+                        resetMotion();
+                    }
+                }
+//                else if (waypointNavigation.isOvershootingWaypoint(latitude, longitude)){
+//                    waypointNavigation.insertWaypoint(latitude, longitude, altitude);
+//                }
+                yaw = waypointNavigation.getNextHeading(latitude, longitude);
+                pitch = (float)0.5;
+                break;
+
             case BACKWARD:
                 internalTimer++;
                 roll = -1;
@@ -232,14 +294,17 @@ public class VirtualSticks extends RelativeLayout
                 pitch = pitchVelocity;
                 break;
             default:
-                pitch = 0;
-                roll = 0;
-                yaw = 0;
-                throttle = 0;
+                resetMotion();
                 break;
         }
     }
 
+    private void resetMotion() {
+        pitch = 0;
+        roll = 0;
+        yaw = 0;
+        throttle = 0;
+    }
     // Sends the flight data (pitch, roll, yaw, throttle) to the flight controller.
     private class SendVirtualStickDataTask extends TimerTask {
 
@@ -263,7 +328,7 @@ public class VirtualSticks extends RelativeLayout
     private class UpdateGUITask extends TimerTask {
         final Runnable GUIRunnable = new Runnable() {
             public void run() {
-                ((MainActivity) getContext()).textLatitudeLongitude.setText(
+                getMainContext().textLatitudeLongitude.setText(
                         "Latitude:" + latitude + "Longitude:" + longitude);
             }
         };
@@ -278,7 +343,7 @@ public class VirtualSticks extends RelativeLayout
                     if (location != null) {
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
-                        ((MainActivity) getContext()).handler.post(GUIRunnable);
+                        getMainContext().handler.post(GUIRunnable);
                     }
                 }
             }

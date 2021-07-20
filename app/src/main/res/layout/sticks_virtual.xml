@@ -13,17 +13,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enable Virtual Stick"
-        style="@style/common_button"
-        android:id="@+id/btn_enable_virtual_stick"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Disable Virtual Stick"
         android:singleLine="true"
         style="@style/common_button"
         android:id="@+id/btn_disable_virtual_stick"/>
-    <!--        android:layout_alignEnd="@+id/btn_enable_virtual_stick"-->     />
 
     <Button
         android:layout_width="wrap_content"
