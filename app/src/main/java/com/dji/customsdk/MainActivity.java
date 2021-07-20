@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private VirtualSticks virtualSticks;
     private CameraImaging cameraImaging;
     private Button btnSpin;
-    private Button btnEnableVirtualStick;
     private Button btnDisableVirtualStick;
     private Button btnOrbit;
     private Button btnWaypoint;
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Initializes all the UI elements other than the UXSDK elements
     protected void initUI(Context context) {
-        btnEnableVirtualStick = (Button) findViewById(R.id.btn_enable_virtual_stick);
         btnDisableVirtualStick = (Button) findViewById(R.id.btn_disable_virtual_stick);
         btnSpin = (Button) findViewById(R.id.btn_spin);
         btnOrbit = (Button) findViewById(R.id.btn_orbit);
@@ -74,9 +72,6 @@ public class MainActivity extends AppCompatActivity {
         textPitchVelocity = findViewById(R.id.text_pitchvelocity);
         textAngularVelocity = findViewById(R.id.text_angularvelocity);
         textLatitudeLongitude = findViewById(R.id.text_latitudelongitude);
-
-
-        btnEnableVirtualStick.setOnClickListener(virtualSticks);
         btnDisableVirtualStick.setOnClickListener(virtualSticks);
         btnSpin.setOnClickListener(virtualSticks);
         btnOrbit.setOnClickListener(virtualSticks);
@@ -85,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);
         textPitchVelocity.setText("Pitch velocity: 0");
         textAngularVelocity.setText("Angular velocity: 0");
-        textLatitudeLongitude.setText("Latitude: 0          Longitude: 0");
+        textLatitudeLongitude.setText("Latitude: 0                   Longitude: 0");
     }
 
     public void showToast(final String msg) {

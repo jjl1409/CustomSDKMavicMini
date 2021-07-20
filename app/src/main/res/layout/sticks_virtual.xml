@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="60dp"
-    android:layout_marginTop= "100dp"
+    android:layout_marginTop= "30dp"
     android:orientation="vertical"
     tools:context=".VirtualSticks">
 

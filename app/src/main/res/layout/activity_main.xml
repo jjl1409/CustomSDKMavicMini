@@ -149,14 +149,6 @@
                 android:layout_marginRight="12dp"
                 tools:ignore="RtlHardcoded"/>
 
-            <TextView
-                android:id="@+id/text_latitudelongitude"
-                android:layout_margin="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:textColor="@android:color/white"/>
-
         </LinearLayout>
 
 
@@ -217,7 +209,14 @@
             custom:excludeItem="ESCStatus"
             android:visibility="gone"/>
 
-<!--        android:layout_alignEnd="@+id/btn_enable_virtual_stick"-->     />
+        <TextView
+            android:id="@+id/text_latitudelongitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="80dp"/>
+
         <include layout="@layout/sticks_virtual"/>
 
     </RelativeLayout>
