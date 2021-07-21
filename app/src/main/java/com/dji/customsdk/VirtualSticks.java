@@ -347,11 +347,11 @@ public class VirtualSticks extends RelativeLayout
                 if (waypointNavigation != null){
                     currentWaypoint = waypointNavigation.currentWaypoint;
                     deltaLat = Math.abs(latitude - waypointNavigation.getTargetLatitude());
-                    deltaLong = waypointNavigation.getTargetLongitude();
+                    deltaLong = Math.abs(longitude - waypointNavigation.getTargetLongitude());
                 }
                 getMainContext().textLatitudeLongitude.setText(
                         "Latitude: " + latitude + "Longitude: " + longitude + "Yaw: " + yaw
-                        + "Waypoint:" + currentWaypoint + "Delta:" + targetLat + ", " + targetLong);
+                        + "Waypoint:" + currentWaypoint + "Delta:" + deltaLat + ", " + deltaLong);
             }
         };
 

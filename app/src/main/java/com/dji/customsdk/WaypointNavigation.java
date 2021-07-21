@@ -74,7 +74,7 @@ public class WaypointNavigation {
         double x = Math.cos(lat2) * Math.sin(long2 - long1);
         double y = (Math.cos(lat1) * Math.sin(lat2))
                  - (Math.sin(lat1) * Math.cos(lat2) * Math.cos(long2 - long1));
-        return (float)(Math.atan2(x, y) * 180 / Math.PI);
+        return (float)Math.toDegrees(Math.atan2(x, y));
     }
 
     public boolean isCloseToWaypoint(double lat1, double long1) {
