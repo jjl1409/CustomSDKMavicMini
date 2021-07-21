@@ -40,7 +40,7 @@
         android:id="@+id/btn_waypoint"/>
 
     <TextView
-        android:id="@+id/text_pitchvelocity"
+        android:id="@+id/text_rollvelocity"
         android:layout_margin="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
 
     <SeekBar
         android:layout_height="wrap_content"
-        android:id="@+id/seekbar_pitchvelocity"
+        android:id="@+id/seekbar_rollvelocity"
         style="@style/common_seekbar"
         android:max="100"
         android:progress="50"/>

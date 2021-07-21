@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.dji.customsdk.utils.DialogUtils;
 import com.dji.customsdk.utils.ModuleVerificationUtil;
 
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -81,7 +80,7 @@ public class VirtualSticks extends RelativeLayout
     @Override
     public void onClick(View v) {
         // Handles button presses for VirtualSticks
-
+        getMainContext().showToast("Button pressed");
         switch (v.getId()) {
 
             case R.id.btn_disable_virtual_stick:
@@ -91,7 +90,7 @@ public class VirtualSticks extends RelativeLayout
                 // Checks if the virtual sticks are on or not
                 enableVirtualSticks();
                 mode = mode.SPIN;
-                if (cameraImaging != null){
+                if (cameraImaging != null && cameraImaging.isCameraAvailable()){
                     System.out.println("Starting camera");
                     cameraImaging.startCameraTimer(100, 5000);
                 }
@@ -106,13 +105,13 @@ public class VirtualSticks extends RelativeLayout
                     break;
                 }
                 enableWaypoints();
-                mode = mode.WAYPOINT;
-                WaypointNavigation waypointNavigation = new WaypointNavigation(
+                waypointNavigation = new WaypointNavigation(
                         WaypointNavigation.Mode.SQUARE, latitude, longitude, altitude);
-                if (cameraImaging != null){
-                    System.out.println("Starting camera");
-                    cameraImaging.startCameraTimer(500, 2000);
+                if (cameraImaging != null && cameraImaging.isCameraAvailable()){
+                    System.out.println("Starting camera, 2 sec interval");
+                    cameraImaging.startCameraTimer(800, 2000);
                 }
+                mode = mode.WAYPOINT;
                 break;
             default:
                 break;
@@ -120,24 +119,30 @@ public class VirtualSticks extends RelativeLayout
     }
 
     // Handles sliders
+    @Override
     public void onProgressChanged(SeekBar seekBar, int progress,
                                   boolean fromUser) {
+        System.out.println(progress);
         switch (seekBar.getId()) {
 
-            case R.id.seekbar_pitchvelocity:
+            case R.id.seekbar_rollvelocity:
                 pitchVelocity = (float)(((progress - 50) / 5) * 0.1);
-                ((MainActivity)getContext()).textPitchVelocity.setText("Pitch velocity: " + pitchVelocity );
+//                getMainContext().textPitchVelocity.setText(progress);
+                getMainContext().textRollVelocity.setText("Roll velocity: " + rollVelocity );
                 break;
 
             case R.id.seekbar_angularvelocity:
                 angularVelocity = (float)(((progress - 50) / 2) * 2);
-                ((MainActivity)getContext()).textAngularVelocity.setText("Angular velocity: " + angularVelocity );
+//                getMainContext().textAngularVelocity.setText(progress);
+                getMainContext().textAngularVelocity.setText("Angular velocity: " + angularVelocity );
                 break;
         }
     }
 
+    @Override
     public void onStartTrackingTouch(SeekBar seekBar) {}
 
+    @Override
     public void onStopTrackingTouch(SeekBar seekBar) {}
 
     // Checks GPS is strong enough to do flight with waypoints
@@ -160,6 +165,7 @@ public class VirtualSticks extends RelativeLayout
             case LEVEL_1:
             case LEVEL_2:
             case LEVEL_3:
+                getMainContext().showToast("GPS too weak");
                 return false;
             default:
                 return true;
@@ -172,6 +178,7 @@ public class VirtualSticks extends RelativeLayout
         // Enable sticks
         FlightController flightController = ModuleVerificationUtil.getFlightController();
         if (flightController == null) {
+            getMainContext().showToast("Could not get flight controller");
             return;
         }
         flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
@@ -257,8 +264,12 @@ public class VirtualSticks extends RelativeLayout
     public void updateFlightControlData() {
         switch(mode) {
             case WAYPOINT:
-                if (waypointNavigation == null || !isGPSStrong()){
-                    getMainContext().showToast("Either no waypoints or GPS is not strong enough");
+                if (!isGPSStrong()){
+                    getMainContext().showToast("GPS is not strong enough");
+                    break;
+                }
+                if (waypointNavigation == null){
+                    getMainContext().showToast("No waypoints");
                     break;
                 }
                 else if (waypointNavigation.isCloseToWaypoint(latitude, longitude)){
@@ -271,13 +282,15 @@ public class VirtualSticks extends RelativeLayout
 //                    waypointNavigation.insertWaypoint(latitude, longitude, altitude);
 //                }
                 yaw = waypointNavigation.getNextHeading(latitude, longitude);
+//                getMainContext().showToast("Angle:" + yaw);
                 pitch = (float)0.5;
+                throttle = altitude;
                 break;
 
             case BACKWARD:
                 internalTimer++;
                 roll = -1;
-                double rollTimer = 360 * 5 * pitchVelocity / angularVelocity / 2 / Math.PI;
+                double rollTimer = 360 * 5 * rollVelocity / angularVelocity / 2 / Math.PI;
                 if (internalTimer > rollTimer) {
                     if (cameraImaging != null){
                         System.out.println("Starting camera");
@@ -291,7 +304,7 @@ public class VirtualSticks extends RelativeLayout
             case SPIN:
                 roll = 0;
                 yaw = angularVelocity;
-                pitch = pitchVelocity;
+                roll = rollVelocity;
                 break;
             default:
                 resetMotion();
@@ -316,7 +329,7 @@ public class VirtualSticks extends RelativeLayout
             }
             updateFlightControlData();
 //            System.out.println(String.format("%.2f, %.2f, %.2f, %.2f", pitch, roll, yaw, throttle));
-            flightController.sendVirtualStickFlightControlData(new FlightControlData(pitch, roll, yaw, throttle),
+            flightController.sendVirtualStickFlightControlData(new FlightControlData(roll, pitch, yaw, throttle),
                                 new CommonCallbacks.CompletionCallback() {
                                     @Override
                                     public void onResult(DJIError djiError) {
@@ -328,8 +341,17 @@ public class VirtualSticks extends RelativeLayout
     private class UpdateGUITask extends TimerTask {
         final Runnable GUIRunnable = new Runnable() {
             public void run() {
+                int currentWaypoint = 0;
+                double deltaLat = 0;
+                double deltaLong = 0;
+                if (waypointNavigation != null){
+                    currentWaypoint = waypointNavigation.currentWaypoint;
+                    deltaLat = Math.abs(latitude - waypointNavigation.getTargetLatitude());
+                    deltaLong = waypointNavigation.getTargetLongitude();
+                }
                 getMainContext().textLatitudeLongitude.setText(
-                        "Latitude:" + latitude + "Longitude:" + longitude);
+                        "Latitude: " + latitude + "Longitude: " + longitude + "Yaw: " + yaw
+                        + "Waypoint:" + currentWaypoint + "Delta:" + targetLat + ", " + targetLong);
             }
         };
 
@@ -343,6 +365,7 @@ public class VirtualSticks extends RelativeLayout
                     if (location != null) {
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
+                        altitude = location.getAltitude();
                         getMainContext().handler.post(GUIRunnable);
                     }
                 }

@@ -1,14 +1,11 @@
 package com.dji.customsdk;
 
 import android.Manifest;
-import android.app.Service;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.LayoutInflater;
 import android.widget.Button;
 import android.content.Context;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnWaypoint;
     private SeekBar seekbarPitchVelocity;
     private SeekBar seekbarAngularVelocity;
-    public TextView textPitchVelocity;
+    public TextView textRollVelocity;
     public TextView textAngularVelocity;
     public TextView textLatitudeLongitude;
     public Handler handler;
@@ -52,13 +49,14 @@ public class MainActivity extends AppCompatActivity {
         }
         handler = new Handler();
         setContentView(R.layout.activity_main);
+//        setContentView(R.layout.sticks_virtual);
         if(cameraImaging == null) {
             cameraImaging = new CameraImaging(this);
         }
-        initUI(this);
         if(virtualSticks == null) {
             virtualSticks = new VirtualSticks(this);
         }
+        initUI(this);
     }
 
     // Initializes all the UI elements other than the UXSDK elements
@@ -67,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
         btnSpin = (Button) findViewById(R.id.btn_spin);
         btnOrbit = (Button) findViewById(R.id.btn_orbit);
         btnWaypoint = (Button) findViewById(R.id.btn_waypoint);
-        seekbarPitchVelocity = findViewById(R.id.seekbar_pitchvelocity);
+        seekbarPitchVelocity = findViewById(R.id.seekbar_rollvelocity);
         seekbarAngularVelocity = findViewById(R.id.seekbar_angularvelocity);
-        textPitchVelocity = findViewById(R.id.text_pitchvelocity);
+        textRollVelocity = findViewById(R.id.text_rollvelocity);
         textAngularVelocity = findViewById(R.id.text_angularvelocity);
         textLatitudeLongitude = findViewById(R.id.text_latitudelongitude);
         btnDisableVirtualStick.setOnClickListener(virtualSticks);
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         btnWaypoint.setOnClickListener(virtualSticks);
         seekbarPitchVelocity.setOnSeekBarChangeListener(virtualSticks);
         seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);
-        textPitchVelocity.setText("Pitch velocity: 0");
+        textRollVelocity.setText("Roll velocity: 0");
         textAngularVelocity.setText("Angular velocity: 0");
         textLatitudeLongitude.setText("Latitude: 0                   Longitude: 0");
     }
