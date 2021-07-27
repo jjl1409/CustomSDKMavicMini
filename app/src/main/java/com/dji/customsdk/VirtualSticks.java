@@ -48,6 +48,7 @@ public class VirtualSticks extends RelativeLayout
     private float pitchVelocity;
     private float angularVelocity;
     private float rollVelocity;
+    private float targetAltitude;
     private double latitude;
     private double longitude;
     private float altitude;
@@ -106,12 +107,13 @@ public class VirtualSticks extends RelativeLayout
                 }
                 enableWaypoints();
                 waypointNavigation = new WaypointNavigation(
-                        WaypointNavigation.Mode.SQUARE, latitude, longitude, altitude);
+                        WaypointNavigation.Mode.MAPPING, latitude, longitude, altitude);
                 if (cameraImaging != null && cameraImaging.isCameraAvailable()){
                     System.out.println("Starting camera, 2 sec interval");
-                    cameraImaging.startCameraTimer(800, 2000);
+                    cameraImaging.startCameraTimer(800, 2100);
                 }
                 mode = mode.WAYPOINT;
+                targetAltitude = altitude;
                 break;
             default:
                 break;
@@ -220,7 +222,7 @@ public class VirtualSticks extends RelativeLayout
 //                Toast.makeText(context,"Deactivated virtual sticks",Toast.LENGTH_SHORT).show();
         System.out.println("Sticks deactivated");
         // Make sure you kill the timer
-        if (null == sendVirtualStickDataTimer) {
+        if (null != sendVirtualStickDataTimer) {
             sendVirtualStickDataTimer.cancel();
             sendVirtualStickDataTimer = null;
             sendVirtualStickDataTask = null;
@@ -272,10 +274,13 @@ public class VirtualSticks extends RelativeLayout
                     getMainContext().showToast("No waypoints");
                     break;
                 }
-                else if (waypointNavigation.isCloseToWaypoint(latitude, longitude)){
-                    if (waypointNavigation.currentWaypoint >= waypointNavigation.numWaypoints()){
+                else if (waypointNavigation.isCloseToWaypoint(latitude, longitude, 0.000006)){
+                    waypointNavigation.currentWaypoint++;
+                    if (!waypointNavigation.hasNextHeading()){
                         disableVirtualSticks();
+                        waypointNavigation = null;
                         resetMotion();
+                        break;
                     }
                 }
 //                else if (waypointNavigation.isOvershootingWaypoint(latitude, longitude)){
@@ -283,8 +288,13 @@ public class VirtualSticks extends RelativeLayout
 //                }
                 yaw = waypointNavigation.getNextHeading(latitude, longitude);
 //                getMainContext().showToast("Angle:" + yaw);
-                pitch = (float)0.5;
-                throttle = altitude;
+                if (waypointNavigation.isCloseToWaypoint(latitude, longitude, 0.00005)){
+                    pitch = (float)2;
+                }
+                else {
+                    pitch = (float)4.5;
+                }
+                throttle = targetAltitude;
                 break;
 
             case BACKWARD:
@@ -342,16 +352,18 @@ public class VirtualSticks extends RelativeLayout
         final Runnable GUIRunnable = new Runnable() {
             public void run() {
                 int currentWaypoint = 0;
+                int numWaypoints = 0;
                 double deltaLat = 0;
                 double deltaLong = 0;
                 if (waypointNavigation != null){
                     currentWaypoint = waypointNavigation.currentWaypoint;
-                    deltaLat = Math.abs(latitude - waypointNavigation.getTargetLatitude());
-                    deltaLong = Math.abs(longitude - waypointNavigation.getTargetLongitude());
+                    numWaypoints = waypointNavigation.numWaypoints();
+                    deltaLat = waypointNavigation.getTargetLatitude() - latitude;
+                    deltaLong = waypointNavigation.getTargetLongitude() - longitude;
                 }
                 getMainContext().textLatitudeLongitude.setText(
                         "Latitude: " + latitude + "Longitude: " + longitude + "Yaw: " + yaw
-                        + "Waypoint:" + currentWaypoint + "Delta:" + deltaLat + ", " + deltaLong);
+                        + "Waypoint:" + currentWaypoint + "/" + numWaypoints + "Delta:" + deltaLat + ", " + deltaLong);
             }
         };
 
