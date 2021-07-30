@@ -355,15 +355,18 @@ public class VirtualSticks extends RelativeLayout
                 int numWaypoints = 0;
                 double deltaLat = 0;
                 double deltaLong = 0;
+                float projectedAltitude = 0;
                 if (waypointNavigation != null){
                     currentWaypoint = waypointNavigation.currentWaypoint;
                     numWaypoints = waypointNavigation.numWaypoints();
                     deltaLat = waypointNavigation.getTargetLatitude() - latitude;
                     deltaLong = waypointNavigation.getTargetLongitude() - longitude;
+                    projectedAltitude = getMainContext().getTerrainFollowing().getAltitude(latitude, longitude);
                 }
                 getMainContext().textLatitudeLongitude.setText(
                         "Latitude: " + latitude + "Longitude: " + longitude + "Yaw: " + yaw
-                        + "Waypoint:" + currentWaypoint + "/" + numWaypoints + "Delta:" + deltaLat + ", " + deltaLong);
+                        + "Waypoint:" + currentWaypoint + "/" + numWaypoints + "Delta:" + deltaLat + ", " + deltaLong
+                        + "Projected altitude: " + projectedAltitude);
             }
         };
 

@@ -107,5 +107,7 @@ public class MainActivity extends AppCompatActivity {
     public CameraImaging getCamera() {
         return cameraImaging;
     }
+
+    public TerrainFollowing getTerrainFollowing() { return terrainFollowing; }
 }
 

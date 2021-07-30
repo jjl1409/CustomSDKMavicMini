@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.*;
 
 public class TerrainFollowing {
+    private final int offset = -12;
+    private final int defaultAltitude = 20;
     private Hashtable<Integer, Hashtable<Integer, Float>> AltitudeData;
 
     public TerrainFollowing(InputStream inputStream) throws FileNotFoundException {
@@ -34,5 +36,30 @@ public class TerrainFollowing {
 //        System.out.println("///////");
     }
 
-    public float getAltitude(double latitude, double longitude) {}
+    public float getAltitude(double lat, double lon) {
+        int latitude = (int) (lat * 10000);
+        int longitude = (int) (lon * 10000);
+        int altitude = -9999;
+        if (AltitudeData.containsKey(latitude)) {
+            if (AltitudeData.get(latitude).containsKey(longitude)) {
+                return AltitudeData.get(latitude).get(longitude);
+            } else if (AltitudeData.get(latitude + 1).containsKey(longitude)) {
+                return AltitudeData.get(latitude).get(longitude);
+            }
+        } else {
+            if (AltitudeData.containsKey(latitude + 1)) {
+                if (AltitudeData.get(latitude).containsKey(longitude)) {
+                    return AltitudeData.get(latitude).get(longitude);
+                } else if (AltitudeData.get(latitude + 1).containsKey(longitude)) {
+                    return AltitudeData.get(latitude).get(longitude);
+                }
+            }
+        }
+        if (altitude < -100) {
+            return 20;
+        }
+        else {
+            return altitude + offset;
+        }
+    }
 }
