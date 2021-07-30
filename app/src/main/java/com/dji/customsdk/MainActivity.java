@@ -13,11 +13,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
     private VirtualSticks virtualSticks;
     private CameraImaging cameraImaging;
+    private TerrainFollowing terrainFollowing;
     private Button btnSpin;
     private Button btnDisableVirtualStick;
     private Button btnOrbit;
@@ -55,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
         }
         if(virtualSticks == null) {
             virtualSticks = new VirtualSticks(this);
+        }
+        if(terrainFollowing == null) {
+            InputStream inputStream = null;
+            try {
+                inputStream = getAssets().open("scan.csv");
+                terrainFollowing = new TerrainFollowing(inputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         initUI(this);
     }
