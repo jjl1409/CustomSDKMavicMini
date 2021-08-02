@@ -107,7 +107,8 @@ public class VirtualSticks extends RelativeLayout
                 }
                 enableWaypoints();
                 waypointNavigation = new WaypointNavigation(
-                        WaypointNavigation.Mode.MAPPING, latitude, longitude, altitude);
+                        WaypointNavigation.Mode.MAPPING, getMainContext().getTerrainFollowing(),
+                        latitude, longitude, altitude);
                 if (cameraImaging != null && cameraImaging.isCameraAvailable()){
                     System.out.println("Starting camera, 2 sec interval");
                     cameraImaging.startCameraTimer(800, 2100);
@@ -355,13 +356,12 @@ public class VirtualSticks extends RelativeLayout
                 int numWaypoints = 0;
                 double deltaLat = 0;
                 double deltaLong = 0;
-                float projectedAltitude = 0;
+                float projectedAltitude = getMainContext().getTerrainFollowing().getAltitude(latitude, longitude);
                 if (waypointNavigation != null){
                     currentWaypoint = waypointNavigation.currentWaypoint;
                     numWaypoints = waypointNavigation.numWaypoints();
                     deltaLat = waypointNavigation.getTargetLatitude() - latitude;
                     deltaLong = waypointNavigation.getTargetLongitude() - longitude;
-                    projectedAltitude = getMainContext().getTerrainFollowing().getAltitude(latitude, longitude);
                 }
                 getMainContext().textLatitudeLongitude.setText(
                         "Latitude: " + latitude + "Longitude: " + longitude + "Yaw: " + yaw

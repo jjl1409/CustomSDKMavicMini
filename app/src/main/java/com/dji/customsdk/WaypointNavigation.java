@@ -16,7 +16,8 @@ public class WaypointNavigation {
         SQUARE;
     }
 
-    public WaypointNavigation(Mode mode, double latitude, double longitude, float altitude) {
+    public WaypointNavigation(Mode mode, TerrainFollowing terrainFollowing,
+                              double latitude, double longitude, float altitude) {
         waypoints = new ArrayList<LocationCoordinate3D>();
         switch (mode) {
             case COMPLICATED:
@@ -33,19 +34,27 @@ public class WaypointNavigation {
                 addWaypoint(latitude, longitude, altitude);
                 break;
             case MAPPING:
-                double lat1 = 40.56950; //40.57150
-                double lat2 = 40.56600;
+                double lat1 = 40.571; //40.57150
+                double lat2 = 40.568;
                 double long1 = -74.16700;
                 double long2 = -74.1600;
                 double currentLat = lat1;
-                double deltaLat = -0.0005;
-                addWaypoint(latitude, longitude, altitude);
+                double currentLong = long1;
+                double deltaLat = -0.0004;
+                double deltaLong = 0.0001;
+                addWaypoint(latitude, longitude, terrainFollowing.getAltitude(latitude, longitude));
                 while (currentLat > lat2){
-                    addWaypoint(currentLat, long1, altitude);
-                    addWaypoint(currentLat, long2, altitude);
+                    while (currentLong < long2){
+                        addWaypoint(currentLat, currentLong,
+                                terrainFollowing.getAltitude(currentLat, currentLong));
+                        currentLong += deltaLong;
+                    }
                     currentLat += deltaLat;
-                    addWaypoint(currentLat, long2, altitude);
-                    addWaypoint(currentLat, long1, altitude);
+                    while (currentLong > long2){
+                        addWaypoint(currentLat, currentLong,
+                                terrainFollowing.getAltitude(currentLat, currentLong));
+                        currentLong -= deltaLong;
+                    }
                     currentLat += deltaLat;
                 }
                 break;

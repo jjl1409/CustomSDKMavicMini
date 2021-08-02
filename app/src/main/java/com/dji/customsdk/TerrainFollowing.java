@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.*;
 
 public class TerrainFollowing {
-    private final int offset = -12;
+    private final int offset = 12;
     private final int defaultAltitude = 20;
     private Hashtable<Integer, Hashtable<Integer, Float>> AltitudeData;
 
@@ -56,7 +56,7 @@ public class TerrainFollowing {
             }
         }
         if (altitude < -100) {
-            return 20;
+            return defaultAltitude;
         }
         else {
             return altitude + offset;
