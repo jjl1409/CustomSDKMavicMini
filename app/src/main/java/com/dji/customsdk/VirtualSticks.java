@@ -109,10 +109,10 @@ public class VirtualSticks extends RelativeLayout
                 waypointNavigation = new WaypointNavigation(
                         WaypointNavigation.Mode.MAPPING, getMainContext().getTerrainFollowing(),
                         latitude, longitude, altitude);
-                if (cameraImaging != null && cameraImaging.isCameraAvailable()){
-                    System.out.println("Starting camera, 2 sec interval");
-                    cameraImaging.startCameraTimer(800, 2100);
-                }
+//                if (cameraImaging != null && cameraImaging.isCameraAvailable()){
+//                    System.out.println("Starting camera, 2 sec interval");
+//                    cameraImaging.startCameraTimer(800, 2200);
+//                }
                 mode = mode.WAYPOINT;
                 targetAltitude = altitude;
                 break;
@@ -277,6 +277,9 @@ public class VirtualSticks extends RelativeLayout
                 }
                 else if (waypointNavigation.isCloseToWaypoint(latitude, longitude, 0.000006)){
                     waypointNavigation.currentWaypoint++;
+                    if (cameraImaging != null && cameraImaging.isCameraAvailable()){
+                        cameraImaging.takePhoto();
+                    }
                     if (!waypointNavigation.hasNextHeading()){
                         disableVirtualSticks();
                         waypointNavigation = null;
@@ -289,13 +292,16 @@ public class VirtualSticks extends RelativeLayout
 //                }
                 yaw = waypointNavigation.getNextHeading(latitude, longitude);
 //                getMainContext().showToast("Angle:" + yaw);
-                if (waypointNavigation.isCloseToWaypoint(latitude, longitude, 0.00005)){
+                if (Math.abs(waypointNavigation.getTargetAltitude() - altitude) > 5) {
+                    pitch = (float)1;
+                }
+                else if (waypointNavigation.isCloseToWaypoint(latitude, longitude, 0.00002)){
                     pitch = (float)2;
                 }
                 else {
                     pitch = (float)4.5;
                 }
-                throttle = targetAltitude;
+                throttle = waypointNavigation.getTargetAltitude();
                 break;
 
             case BACKWARD:
@@ -356,17 +362,23 @@ public class VirtualSticks extends RelativeLayout
                 int numWaypoints = 0;
                 double deltaLat = 0;
                 double deltaLong = 0;
+                double deltaAlt = 0;
                 float projectedAltitude = getMainContext().getTerrainFollowing().getAltitude(latitude, longitude);
-                if (waypointNavigation != null){
+                if (mode == Mode.WAYPOINT && waypointNavigation != null) {
                     currentWaypoint = waypointNavigation.currentWaypoint;
                     numWaypoints = waypointNavigation.numWaypoints();
                     deltaLat = waypointNavigation.getTargetLatitude() - latitude;
                     deltaLong = waypointNavigation.getTargetLongitude() - longitude;
+                    deltaAlt = waypointNavigation.getTargetAltitude() - altitude;
+                    getMainContext().textLatitudeLongitude.setText(
+                            "Latitude: " + latitude + "Longitude: " + longitude + "Yaw: " + yaw
+                                    + "Waypoint:" + currentWaypoint + "/" + numWaypoints + "Delta:" + deltaLat + ", " + deltaLong
+                                    + ", " + deltaAlt + "Projected altitude: " + projectedAltitude);
                 }
-                getMainContext().textLatitudeLongitude.setText(
-                        "Latitude: " + latitude + "Longitude: " + longitude + "Yaw: " + yaw
-                        + "Waypoint:" + currentWaypoint + "/" + numWaypoints + "Delta:" + deltaLat + ", " + deltaLong
-                        + "Projected altitude: " + projectedAltitude);
+                else {
+                    getMainContext().textLatitudeLongitude.setText(
+                            "Latitude: " + latitude + "Longitude: " + longitude + "Yaw: " + yaw);
+                }
             }
         };
 

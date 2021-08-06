@@ -13,6 +13,7 @@ public class WaypointNavigation {
     public enum Mode {
         COMPLICATED,
         MAPPING,
+        TRACING,
         SQUARE;
     }
 
@@ -33,11 +34,11 @@ public class WaypointNavigation {
                 addWaypoint(latitude + 0.0001, longitude, altitude);
                 addWaypoint(latitude, longitude, altitude);
                 break;
-            case MAPPING:
+            case TRACING:
                 double lat1 = 40.571; //40.57150
                 double lat2 = 40.568;
                 double long1 = -74.16700;
-                double long2 = -74.1600;
+                double long2 = -74.1620;
                 double currentLat = lat1;
                 double currentLong = long1;
                 double deltaLat = -0.0004;
@@ -50,11 +51,28 @@ public class WaypointNavigation {
                         currentLong += deltaLong;
                     }
                     currentLat += deltaLat;
-                    while (currentLong > long2){
+                    while (currentLong > long1){
                         addWaypoint(currentLat, currentLong,
                                 terrainFollowing.getAltitude(currentLat, currentLong));
                         currentLong -= deltaLong;
                     }
+                    currentLat += deltaLat;
+                }
+                break;
+            case MAPPING:
+                lat1 = 40.571; //40.57150
+                lat2 = 40.567;
+                long1 = -74.16700;
+                long2 = -74.1620;
+                currentLat = lat1;
+                deltaLat = -0.0004;
+                float targetAltitude = 60;
+                addWaypoint(latitude, longitude, altitude);
+                addWaypoint(currentLat, long2, targetAltitude);
+                while (currentLat > lat2){
+                    addWaypoint(currentLat, long2, targetAltitude);
+                    currentLat += deltaLat;
+                    addWaypoint(currentLat, long1, targetAltitude);
                     currentLat += deltaLat;
                 }
                 break;
@@ -91,9 +109,15 @@ public class WaypointNavigation {
     public double getTargetLatitude() {
         return waypoints.get(currentWaypoint).getLatitude();
     }
+
     public double getTargetLongitude() {
         return waypoints.get(currentWaypoint).getLongitude();
     }
+
+    public float getTargetAltitude() {
+        return waypoints.get(currentWaypoint).getAltitude();
+    }
+
     public float getNextHeading(double lat1, double long1) {
         double lat2 = getTargetLatitude();
         double long2 = getTargetLongitude();
