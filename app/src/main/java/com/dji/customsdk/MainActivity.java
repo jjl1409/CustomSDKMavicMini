@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnDisableVirtualStick;
     private Button btnOrbit;
     private Button btnWaypoint;
+    private Button btnMap;
     private SeekBar seekbarPitchVelocity;
     private SeekBar seekbarAngularVelocity;
     public TextView textRollVelocity;
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         btnSpin = (Button) findViewById(R.id.btn_spin);
         btnOrbit = (Button) findViewById(R.id.btn_orbit);
         btnWaypoint = (Button) findViewById(R.id.btn_waypoint);
+        btnMap = (Button) findViewById(R.id.btn_map);
         seekbarPitchVelocity = findViewById(R.id.seekbar_rollvelocity);
         seekbarAngularVelocity = findViewById(R.id.seekbar_angularvelocity);
         textRollVelocity = findViewById(R.id.text_rollvelocity);
