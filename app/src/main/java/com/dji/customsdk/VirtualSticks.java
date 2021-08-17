@@ -81,7 +81,6 @@ public class VirtualSticks extends RelativeLayout
     @Override
     public void onClick(View v) {
         // Handles button presses for VirtualSticks
-        getMainContext().showToast("Button pressed");
         switch (v.getId()) {
 
             case R.id.btn_disable_virtual_stick:

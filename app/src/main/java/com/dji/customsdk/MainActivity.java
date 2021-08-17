@@ -4,6 +4,7 @@ import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.Button;
 import android.content.Context;
 import android.widget.SeekBar;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private VirtualSticks virtualSticks;
     private CameraImaging cameraImaging;
     private TerrainFollowing terrainFollowing;
+    private MapGUI mapGUI;
     private Button btnSpin;
     private Button btnDisableVirtualStick;
     private Button btnOrbit;
@@ -72,11 +74,14 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        initUI(this);
+        if(mapGUI == null){
+            mapGUI = new MapGUI(this);
+        }
+        initMainUI(this);
     }
 
     // Initializes all the UI elements other than the UXSDK elements
-    protected void initUI(Context context) {
+    protected void initMainUI(Context context) {
         btnDisableVirtualStick = (Button) findViewById(R.id.btn_disable_virtual_stick);
         btnSpin = (Button) findViewById(R.id.btn_spin);
         btnOrbit = (Button) findViewById(R.id.btn_orbit);
@@ -91,12 +96,19 @@ public class MainActivity extends AppCompatActivity {
         btnSpin.setOnClickListener(virtualSticks);
         btnOrbit.setOnClickListener(virtualSticks);
         btnWaypoint.setOnClickListener(virtualSticks);
+        btnMap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                setContentView(R.layout.map_gui);
+            }
+        });
         seekbarPitchVelocity.setOnSeekBarChangeListener(virtualSticks);
         seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);
         textRollVelocity.setText("Roll velocity: 0");
         textAngularVelocity.setText("Angular velocity: 0");
         textLatitudeLongitude.setText("Latitude: 0                   Longitude: 0");
     }
+
+
 
     public void showToast(final String msg) {
         runOnUiThread(new Runnable() {

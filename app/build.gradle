@@ -97,6 +97,7 @@ dependencies {
         exclude module: 'library-anti-distortion'
         //exclude module: 'fly-safe-database'
     })
+    implementation 'com.google.android.material:material:1.2.1'
     compileOnly ('com.dji:dji-sdk-provided:4.14-trial1')
 
     implementation 'androidx.appcompat:appcompat:1.0.0'
