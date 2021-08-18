@@ -11,11 +11,10 @@
 
     <ImageView
         android:id="@+id/field"
-        android:layout_width="900dp"
-        android:layout_height="500dp"
+        android:layout_width="800dp"
+        android:layout_height="450dp"
         android:src="@drawable/field"
-        android:translationX="62dp"
-        android:translationY="134dp"
+        android:translationX="81dp"
         custom:srcCompat="@drawable/field" />
 
     <Button
@@ -24,5 +23,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Return"
-        android:translationY="624dp" />
+        android:translationX="81dp"
+        android:translationY="450dp" />
 </RelativeLayout>

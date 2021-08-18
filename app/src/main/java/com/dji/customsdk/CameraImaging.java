@@ -16,6 +16,7 @@ import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.camera.Camera;
 import dji.sdk.media.MediaFile;
+import dji.sdk.products.Aircraft;
 
 public class CameraImaging {
 
@@ -52,9 +53,13 @@ public class CameraImaging {
     }
 
     public boolean isCameraAvailable(){
-        return NewApplication.getAircraftInstance().getCamera() != null;
+        Aircraft aircraft = NewApplication.getAircraftInstance();
+        return aircraft.getCamera() != null;
     }
     protected void takePhoto() {
+        if (!isCameraAvailable()){
+            return;
+        }
         camera = NewApplication.getAircraftInstance().getCamera();
             if (camera != null) {
             System.out.println("Trying to take photo right now!");

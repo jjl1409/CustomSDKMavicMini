@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             virtualSticks = new VirtualSticks(this);
         }
         if (mapGUI == null){
-            mapGUI = new MapGUI(this, map);
+            mapGUI = new MapGUI(this);
         }
         if(terrainFollowing == null) {
             InputStream inputStream = null;
@@ -106,7 +106,11 @@ public class MainActivity extends AppCompatActivity {
                 map.setVisibility(View.VISIBLE);
             }
         });
-        btnReturn.setOnClickListener(mapGUI);
+        btnReturn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                map.setVisibility(View.GONE);
+            }
+        });
         seekbarPitchVelocity.setOnSeekBarChangeListener(virtualSticks);
         seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);
         textRollVelocity.setText("Roll velocity: 0");

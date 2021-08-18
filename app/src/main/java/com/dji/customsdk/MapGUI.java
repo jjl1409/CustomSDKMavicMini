@@ -15,17 +15,21 @@ public class MapGUI extends RelativeLayout
     private Context context;
     private View view;
 
-    public MapGUI(Context context, View view) {
+    public MapGUI(Context context) {
         super(context);
         this.context = context;
-        this.view = view;
+        view = ((MainActivity)context).map;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_return:
-                view.setVisibility(GONE);
+                view.setVisibility(View.GONE);
+                break;
+            case R.id.btn_map:
+                view.setVisibility(View.VISIBLE);
+                break;
         }
     }
 }

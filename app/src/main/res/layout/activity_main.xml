@@ -218,6 +218,6 @@
             android:layout_marginLeft="80dp"/>
 
         <include layout="@layout/sticks_virtual"/>
-        <include layout="@layout/map_gui"/>
     </RelativeLayout>
+    <include layout="@layout/map_gui"/>
 </FrameLayout>
