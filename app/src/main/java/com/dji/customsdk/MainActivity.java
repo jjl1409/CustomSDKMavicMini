@@ -31,12 +31,14 @@ public class MainActivity extends AppCompatActivity {
     private Button btnOrbit;
     private Button btnWaypoint;
     private Button btnMap;
+    private Button btnReturn;
     private SeekBar seekbarPitchVelocity;
     private SeekBar seekbarAngularVelocity;
     public TextView textRollVelocity;
     public TextView textAngularVelocity;
     public TextView textLatitudeLongitude;
     public Handler handler;
+    public View map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         if(virtualSticks == null) {
             virtualSticks = new VirtualSticks(this);
         }
+        if (mapGUI == null){
+            mapGUI = new MapGUI(this, map);
+        }
         if(terrainFollowing == null) {
             InputStream inputStream = null;
             try {
@@ -73,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        if(mapGUI == null){
-            mapGUI = new MapGUI(this);
         }
         initMainUI(this);
     }
@@ -87,20 +89,24 @@ public class MainActivity extends AppCompatActivity {
         btnOrbit = (Button) findViewById(R.id.btn_orbit);
         btnWaypoint = (Button) findViewById(R.id.btn_waypoint);
         btnMap = (Button) findViewById(R.id.btn_map);
+        btnReturn = (Button) findViewById(R.id.btn_return);
         seekbarPitchVelocity = findViewById(R.id.seekbar_rollvelocity);
         seekbarAngularVelocity = findViewById(R.id.seekbar_angularvelocity);
         textRollVelocity = findViewById(R.id.text_rollvelocity);
         textAngularVelocity = findViewById(R.id.text_angularvelocity);
         textLatitudeLongitude = findViewById(R.id.text_latitudelongitude);
+        map = findViewById(R.id.map_gui);
+
         btnDisableVirtualStick.setOnClickListener(virtualSticks);
         btnSpin.setOnClickListener(virtualSticks);
         btnOrbit.setOnClickListener(virtualSticks);
         btnWaypoint.setOnClickListener(virtualSticks);
         btnMap.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
-                setContentView(R.layout.map_gui);
+                map.setVisibility(View.VISIBLE);
             }
         });
+        btnReturn.setOnClickListener(mapGUI);
         seekbarPitchVelocity.setOnSeekBarChangeListener(virtualSticks);
         seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);
         textRollVelocity.setText("Roll velocity: 0");

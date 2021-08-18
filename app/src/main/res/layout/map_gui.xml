@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/map_gui"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="60dp"
-    android:layout_marginTop= "30dp"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:visibility="gone"
     tools:context=".MapGUI">
 
+    <ImageView
+        android:id="@+id/field"
+        android:layout_width="900dp"
+        android:layout_height="500dp"
+        android:src="@drawable/field"
+        android:translationX="62dp"
+        android:translationY="134dp"
+        custom:srcCompat="@drawable/field" />
 
-
-
-</LinearLayout>
+    <Button
+        android:id="@+id/btn_return"
+        style="@style/common_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Return"
+        android:translationY="624dp" />
+</RelativeLayout>
