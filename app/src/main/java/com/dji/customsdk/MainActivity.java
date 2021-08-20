@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.content.Context;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnReturn;
     private SeekBar seekbarPitchVelocity;
     private SeekBar seekbarAngularVelocity;
+    private ImageView imageMap;
     public TextView textRollVelocity;
     public TextView textAngularVelocity;
     public TextView textLatitudeLongitude;
@@ -96,11 +98,13 @@ public class MainActivity extends AppCompatActivity {
         textAngularVelocity = findViewById(R.id.text_angularvelocity);
         textLatitudeLongitude = findViewById(R.id.text_latitudelongitude);
         map = findViewById(R.id.map_gui);
+        imageMap = findViewById(R.id.field);
 
         btnDisableVirtualStick.setOnClickListener(virtualSticks);
         btnSpin.setOnClickListener(virtualSticks);
         btnOrbit.setOnClickListener(virtualSticks);
         btnWaypoint.setOnClickListener(virtualSticks);
+
         btnMap.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
                 map.setVisibility(View.VISIBLE);
@@ -111,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 map.setVisibility(View.GONE);
             }
         });
+        imageMap.setOnTouchListener(mapGUI);
         seekbarPitchVelocity.setOnSeekBarChangeListener(virtualSticks);
         seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);
         textRollVelocity.setText("Roll velocity: 0");
@@ -133,5 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public TerrainFollowing getTerrainFollowing() { return terrainFollowing; }
+
+    public VirtualSticks getVirtualSticks() { return virtualSticks; }
 }
 
