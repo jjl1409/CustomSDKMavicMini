@@ -33,9 +33,12 @@ public class MainActivity extends AppCompatActivity {
     private Button btnWaypoint;
     private Button btnMap;
     private Button btnReturn;
+    private Button btnCamera;
     private SeekBar seekbarPitchVelocity;
     private SeekBar seekbarAngularVelocity;
     private ImageView imageMap;
+    public ImageView drone;
+    public ImageView target;
     public TextView textRollVelocity;
     public TextView textAngularVelocity;
     public TextView textLatitudeLongitude;
@@ -92,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         btnWaypoint = (Button) findViewById(R.id.btn_waypoint);
         btnMap = (Button) findViewById(R.id.btn_map);
         btnReturn = (Button) findViewById(R.id.btn_return);
+        btnCamera = (Button) findViewById(R.id.btn_camera);
         seekbarPitchVelocity = findViewById(R.id.seekbar_rollvelocity);
         seekbarAngularVelocity = findViewById(R.id.seekbar_angularvelocity);
         textRollVelocity = findViewById(R.id.text_rollvelocity);
@@ -99,22 +103,26 @@ public class MainActivity extends AppCompatActivity {
         textLatitudeLongitude = findViewById(R.id.text_latitudelongitude);
         map = findViewById(R.id.map_gui);
         imageMap = findViewById(R.id.field);
+        drone = findViewById(R.id.drone);
+        target = findViewById(R.id.target);
 
         btnDisableVirtualStick.setOnClickListener(virtualSticks);
         btnSpin.setOnClickListener(virtualSticks);
         btnOrbit.setOnClickListener(virtualSticks);
         btnWaypoint.setOnClickListener(virtualSticks);
-
-        btnMap.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v){
-                map.setVisibility(View.VISIBLE);
-            }
-        });
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v){
-                map.setVisibility(View.GONE);
-            }
-        });
+        btnReturn.setOnClickListener(virtualSticks);
+        btnMap.setOnClickListener(mapGUI);
+        btnReturn.setOnClickListener(mapGUI);
+//        btnMap.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v){
+//                map.setVisibility(View.VISIBLE);
+//            }
+//        });
+//        btnReturn.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v){
+//                map.setVisibility(View.GONE);
+//            }
+//        });
         imageMap.setOnTouchListener(mapGUI);
         seekbarPitchVelocity.setOnSeekBarChangeListener(virtualSticks);
         seekbarAngularVelocity.setOnSeekBarChangeListener(virtualSticks);

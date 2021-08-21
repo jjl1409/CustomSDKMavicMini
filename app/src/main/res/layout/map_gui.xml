@@ -6,15 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:visibility="visible"
+    android:visibility="gone"
     tools:context=".MapGUI">
 
     <ImageView
         android:id="@+id/field"
         android:layout_width="800dp"
-        android:layout_height="450dp"
+        android:layout_height="400dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         android:src="@drawable/field"
-        android:translationX="81dp"
+        android:translationX="82dp"
+        android:translationY="25dp"
         custom:srcCompat="@drawable/field" />
 
     <Button
@@ -23,6 +26,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Return"
-        android:translationX="81dp"
-        android:translationY="450dp" />
+        android:translationX="100dp"
+        android:translationY="425dp" />
+
+    <ImageView
+        android:id="@+id/drone"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/drone"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/target"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/target"
+        android:visibility="visible" />
 </RelativeLayout>

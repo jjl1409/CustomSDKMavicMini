@@ -54,7 +54,7 @@ public class CameraImaging {
 
     public boolean isCameraAvailable(){
         Aircraft aircraft = NewApplication.getAircraftInstance();
-        return aircraft.getCamera() != null;
+        return (aircraft  != null && aircraft.getCamera() != null);
     }
     protected void takePhoto() {
         if (!isCameraAvailable()){

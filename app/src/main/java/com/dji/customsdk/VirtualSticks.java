@@ -107,7 +107,7 @@ public class VirtualSticks extends RelativeLayout
                 enableWaypoints();
                 waypointNavigation = new WaypointNavigation(
                         WaypointNavigation.Mode.MAPPING, getMainContext().getTerrainFollowing(),
-                        latitude, longitude, altitude);
+                        latitude, longitude, altitude, latitude, longitude);
 //                if (cameraImaging != null && cameraImaging.isCameraAvailable()){
 //                    System.out.println("Starting camera, 2 sec interval");
 //                    cameraImaging.startCameraTimer(800, 2200);

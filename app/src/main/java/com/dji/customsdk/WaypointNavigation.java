@@ -14,11 +14,13 @@ public class WaypointNavigation {
         COMPLICATED,
         MAPPING,
         TRACING,
-        SQUARE;
+        SQUARE,
+        POINT;
     }
 
     public WaypointNavigation(Mode mode, TerrainFollowing terrainFollowing,
-                              double latitude, double longitude, float altitude) {
+                              double latitude, double longitude, float altitude,
+                              double targetLat, double targetLong) {
         waypoints = new ArrayList<LocationCoordinate3D>();
         switch (mode) {
             case COMPLICATED:
@@ -34,6 +36,7 @@ public class WaypointNavigation {
                 addWaypoint(latitude + 0.0001, longitude, altitude);
                 addWaypoint(latitude, longitude, altitude);
                 break;
+
             case TRACING:
                 double lat1 = 40.571; //40.57150
                 double lat2 = 40.568;
@@ -59,6 +62,7 @@ public class WaypointNavigation {
                     currentLat += deltaLat;
                 }
                 break;
+
             case MAPPING:
                 lat1 = 40.571; //40.57150
                 lat2 = 40.567;
@@ -76,11 +80,34 @@ public class WaypointNavigation {
                     currentLat += deltaLat;
                 }
                 break;
+
             case SQUARE:
                 addWaypoint(latitude, longitude, altitude);
                 addWaypoint(latitude + 0.0001, longitude, altitude);
                 addWaypoint(latitude, longitude, altitude);
                 break;
+
+            case POINT:
+                currentLat = latitude;
+                currentLong = longitude;
+                deltaLat = Math.abs(targetLat - latitude);
+                deltaLong = Math.abs(targetLong - latitude);
+                int steps = 0;
+                if (Math.abs(deltaLat) > Math.abs(deltaLong)){
+                    steps = (int)(deltaLat / 0.0001);
+                }
+                else {
+                    steps = (int)(deltaLong / 0.0001);
+                }
+                addWaypoint(latitude, longitude, altitude);
+                for (int i = 0; i < steps; i++) {
+                    addWaypoint(currentLat, currentLong,
+                            terrainFollowing.getAltitude(currentLat, currentLong));
+                    currentLat += deltaLat / steps;
+                    currentLong += deltaLong / steps;
+                }
+                addWaypoint(targetLat, targetLong, terrainFollowing.getAltitude(currentLat, currentLong));
+
         }
         currentWaypoint = 1;
 
@@ -89,6 +116,7 @@ public class WaypointNavigation {
     public int numWaypoints() {
         return waypoints.size();
     }
+
     public void addWaypoint(double latitude, double longitude, float altitude) {
         waypoints.add(new LocationCoordinate3D(latitude, longitude, altitude));
     }
