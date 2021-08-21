@@ -38,7 +38,7 @@ implements View.OnTouchListener, View.OnClickListener{
     double droneLatitude;
     double droneLongitude;
     private Timer droneLocationTimer;
-    private DroneLocationTask sendDroneLocationTask;
+    private DroneLocationTask droneLocationTask;
 
     public MapGUI(Context context) {
         super(context);
@@ -53,9 +53,17 @@ implements View.OnTouchListener, View.OnClickListener{
         switch (v.getId()) {
             case R.id.btn_map:
                 mainContext.map.setVisibility(View.VISIBLE);
+                droneLocationTask = new DroneLocationTask();
+                droneLocationTimer = new Timer();
+                droneLocationTimer.schedule(droneLocationTask, 500, 100);
                 break;
             case R.id.btn_return:
                 mainContext.map.setVisibility(View.GONE);
+                if (droneLocationTask != null && droneLocationTimer != null){
+                    droneLocationTask.cancel();
+                    droneLocationTask = null;
+                    droneLocationTimer = null;
+                }
         }
     }
 
@@ -135,7 +143,7 @@ implements View.OnTouchListener, View.OnClickListener{
         @Override
         public void run() {
             if (!virtualSticks.isGPSStrong()){
-                cancel();
+                mainContext.drone.setVisibility(GONE);
             }
             FlightController flightController = ModuleVerificationUtil.getFlightController();
             if (flightController != null) {
@@ -150,7 +158,7 @@ implements View.OnTouchListener, View.OnClickListener{
                     }
                 }
             }
-            cancel();
+            mainContext.drone.setVisibility(GONE);
         }
     }
 }
