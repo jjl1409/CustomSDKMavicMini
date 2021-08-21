@@ -34,13 +34,14 @@ public class VirtualSticks extends RelativeLayout
 
     private TextView textView;
 
-    private Timer sendVirtualStickDataTimer;
-    private SendVirtualStickDataTask sendVirtualStickDataTask;
+                    private Timer sendVirtualStickDataTimer;
+                    private SendVirtualStickDataTask sendVirtualStickDataTask;
     private Timer UpdateGUITimer;
     private UpdateGUITask updateGUITask;
     private Context context;
     private CameraImaging cameraImaging;
-    private WaypointNavigation waypointNavigation;
+    public WaypointNavigation waypointNavigation;
+    public boolean isCameraActive;
     private float pitch;
     private float roll;
     private float yaw;
@@ -51,11 +52,11 @@ public class VirtualSticks extends RelativeLayout
     private float targetAltitude;
     private double latitude;
     private double longitude;
-    private float altitude;
+    public float altitude;
     private int internalTimer;
 
     // Enum that tracks which mode the drone is in
-    private enum Mode {
+    public enum Mode {
         OFF,
         SPIN,
         ORBIT,
@@ -63,7 +64,7 @@ public class VirtualSticks extends RelativeLayout
         BACKWARD,
         WAYPOINT
     }
-    private Mode mode;
+    public Mode mode;
 
     public VirtualSticks(Context context) {
         super(context);
@@ -86,6 +87,13 @@ public class VirtualSticks extends RelativeLayout
             case R.id.btn_disable_virtual_stick:
                 disableVirtualSticks();
                 break;
+            case R.id.btn_camera:
+                if (!isCameraActive && cameraImaging.isCameraAvailable()){
+                    cameraImaging.startCameraTimer(500, 2500);
+                }
+                else if (isCameraActive){
+                    cameraImaging.stopCameraTimer();
+                }
             case R.id.btn_spin:
                 // Checks if the virtual sticks are on or not
                 enableVirtualSticks();
